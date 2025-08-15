@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"notify-service/internal/env"
+	"notify-service/internal/server"
+)
+
+func init() {
+	env.Init()
+}
 
 func main() {
-	fmt.Println("Hello, from Notification Service")
+	server.NewServer()
 }
