@@ -3,6 +3,7 @@ import logger from "./services/logger";
 import express from "express";
 import cors from "cors";
 import { gracefulShutdown } from "./utils/shutdown";
+import rootRouter from "./routes";
 
 async function initServer() {
   try {
@@ -11,8 +12,7 @@ async function initServer() {
     const app = express();
 
     app.use(cors());
-
-    app.get("/", (_req, res) => res.send("Hi"));
+    app.use("/", rootRouter);
 
     const server = app.listen(env.port, () => {
       logger.log(`Main server listening on port ${env.port}...`);

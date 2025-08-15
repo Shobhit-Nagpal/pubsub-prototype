@@ -12,8 +12,6 @@ async function initServer() {
 
     app.use(cors());
 
-    app.get("/", (_req, res) => res.send("Hi"));
-
     const server = app.listen(env.port, () => {
       logger.log(`Fs server listening on port ${env.port}...`);
     });

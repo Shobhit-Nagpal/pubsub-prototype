@@ -3,6 +3,7 @@ import logger from "./services/logger";
 import express from "express";
 import cors from "cors";
 import { gracefulShutdown } from "./utils/shutdown";
+import { initServices } from "./services";
 
 async function initServer() {
   try {
@@ -12,7 +13,7 @@ async function initServer() {
 
     app.use(cors());
 
-    app.get("/", (_req, res) => res.send("Hi"));
+    await initServices();
 
     const server = app.listen(env.port, () => {
       logger.log(`Email server listening on port ${env.port}...`);
