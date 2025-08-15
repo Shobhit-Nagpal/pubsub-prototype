@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"notify-service/internal/consumer"
 	"notify-service/internal/env"
 )
 
 func NewServer() {
 	registerHandlers()
+	consumer.Init()
 	fmt.Printf("Server listening on PORT %s\n", env.GetEnv().Port)
 	log.Fatal(http.ListenAndServe(env.GetEnv().Port, nil))
 }

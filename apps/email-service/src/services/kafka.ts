@@ -10,6 +10,8 @@ function initKafkaConsumer() {
 
   const consumer = kafka.consumer({ groupId: "test-group" });
 
+  logger.log("Kafka consumer intialized...");
+
   return consumer;
 }
 
