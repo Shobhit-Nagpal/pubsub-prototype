@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import { gracefulShutdown } from "./utils/shutdown";
 import rootRouter from "./routes";
+import { connectProducer } from "./services/kafka";
 
 async function initServer() {
   try {
@@ -13,6 +14,8 @@ async function initServer() {
 
     app.use(cors());
     app.use("/", rootRouter);
+
+    await connectProducer();
 
     const server = app.listen(env.port, () => {
       logger.log(`Main server listening on port ${env.port}...`);

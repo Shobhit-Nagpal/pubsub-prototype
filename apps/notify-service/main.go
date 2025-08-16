@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"notify-service/internal/env"
 	"notify-service/internal/server"
 )
@@ -10,5 +11,6 @@ func init() {
 }
 
 func main() {
+	fmt.Println("Initializing server...")
 	server.NewServer()
 }

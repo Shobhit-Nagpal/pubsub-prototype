@@ -5,10 +5,10 @@ import { sendMail } from "../core/email";
 function initKafkaConsumer() {
   const kafka = new Kafka({
     clientId: "pubsub-prototype",
-    brokers: ["kafka1:9092", "kafka2:9092"],
+    brokers: ["localhost:29092", "localhost:39092"],
   });
 
-  const consumer = kafka.consumer({ groupId: "test-group" });
+  const consumer = kafka.consumer({ groupId: "test-group-1" });
 
   logger.log("Kafka consumer intialized...");
 

@@ -3,6 +3,7 @@ import logger from "./services/logger";
 import express from "express";
 import cors from "cors";
 import { gracefulShutdown } from "./utils/shutdown";
+import { initServices } from "./services";
 
 async function initServer() {
   try {
@@ -11,6 +12,8 @@ async function initServer() {
     const app = express();
 
     app.use(cors());
+
+    await initServices();
 
     const server = app.listen(env.port, () => {
       logger.log(`Fs server listening on port ${env.port}...`);

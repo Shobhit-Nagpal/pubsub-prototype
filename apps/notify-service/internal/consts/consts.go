@@ -1,3 +1,3 @@
 package consts
 
-const TOPIC = "SendNotification"
+const TOPIC = "ServerNotification"
