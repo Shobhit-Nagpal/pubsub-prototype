@@ -27,12 +27,16 @@ export async function connectAndSubscribeConsumer(topic: string) {
 export async function runConsumer() {
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
-      sendMail();
-      logger.log({
-        value: message.value?.toString(),
-        topic,
-        partition,
-      });
+      const msg = message.value?.toString();
+
+      if (msg) {
+        sendMail(msg);
+        logger.log({
+          value: msg,
+          topic,
+          partition,
+        });
+      }
     },
   });
 }

@@ -17,7 +17,7 @@ export async function connectAndSubscribeConsumer(topic: string) {
   try {
     await consumer.connect();
     await consumer.subscribe({ topic, fromBeginning: true });
-    logger.log('Consumer connected to Kafka...')
+    logger.log("Consumer connected to Kafka...");
   } catch (err) {
     logger.error(`Error connecting to kafka: ${err}`);
   }
@@ -26,13 +26,16 @@ export async function connectAndSubscribeConsumer(topic: string) {
 export async function runConsumer() {
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
-      console.log('Hello')
-      await writeToSystem();
-      logger.log({
-        value: message.value?.toString(),
-        topic,
-        partition,
-      });
+      const msg = message.value?.toString();
+
+      if (msg) {
+        await writeToSystem(msg);
+        logger.log({
+          value: msg,
+          topic,
+          partition,
+        });
+      }
     },
   });
 }

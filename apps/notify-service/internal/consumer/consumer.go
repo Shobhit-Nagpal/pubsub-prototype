@@ -3,6 +3,7 @@ package consumer
 import (
 	"fmt"
 	"notify-service/internal/consts"
+	"notify-service/internal/notify"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
@@ -31,6 +32,7 @@ func Init() {
 	for run {
 		msg, err := c.ReadMessage(time.Second)
 		if err == nil {
+			notify.Notify(string(msg.Value))
 			fmt.Printf("Message on %s: %s\n", msg.TopicPartition, string(msg.Value))
 		} else if !err.(kafka.Error).IsTimeout() {
 			// The client will automatically try to recover from all errors.
