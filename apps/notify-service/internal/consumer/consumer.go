@@ -1,45 +1,45 @@
 package consumer
 
 import (
-	"context"
 	"fmt"
-	"log"
 	"notify-service/internal/consts"
 	"time"
 
-	"github.com/segmentio/kafka-go"
+	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )
 
 func Init() {
-	topic := consts.TOPIC
-	partition := 0
+	c, err := kafka.NewConsumer(&kafka.ConfigMap{
+		"bootstrap.servers": "localhost:29092",
+		"group.id":          "test-group-3",
+		"auto.offset.reset": "earliest",
+	})
 
-	fmt.Println("Initializing Kafka consumer...")
-
-	conn, err := kafka.DialLeader(context.Background(), "tcp", "localhost:29092", topic, partition)
 	if err != nil {
-		log.Fatal("failed to dial leader:", err)
+		panic(err)
 	}
 
-	fmt.Println("Kafka consumer initialized...")
+	err = c.SubscribeTopics([]string{consts.TOPIC}, nil)
 
-	conn.SetReadDeadline(time.Now().Add(10 * time.Second))
-	batch := conn.ReadBatch(10e3, 1e6) // fetch 10KB min, 1MB max
+	if err != nil {
+		panic(err)
+	}
 
-	b := make([]byte, 10e3) // 10KB max per message
-	for {
-		n, err := batch.Read(b)
-		if err != nil {
-			break
+	// A signal handler or similar could be used to set this to false to break the loop.
+	run := true
+
+	for run {
+		msg, err := c.ReadMessage(time.Second)
+		if err == nil {
+			fmt.Printf("Message on %s: %s\n", msg.TopicPartition, string(msg.Value))
+		} else if !err.(kafka.Error).IsTimeout() {
+			// The client will automatically try to recover from all errors.
+			// Timeout is not considered an error because it is raised by
+			// ReadMessage in absence of messages.
+			fmt.Printf("Consumer error: %v (%v)\n", err, msg)
 		}
-		fmt.Println(string(b[:n]))
 	}
 
-	if err := batch.Close(); err != nil {
-		log.Fatal("failed to close batch:", err)
-	}
+	c.Close()
 
-	if err := conn.Close(); err != nil {
-		log.Fatal("failed to close connection:", err)
-	}
 }
